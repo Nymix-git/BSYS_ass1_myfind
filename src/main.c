@@ -1,7 +1,23 @@
 #include "iterator.h"
+#include "myfind1.c"
+
+#define MAX_ARGS 255
 
 int main(int argc, char *argv[])
 {
+    char start_dir[MAX_ARGS];
+    
+    process_args(argc, argv, start_dir);
+    
+    
+    
+    
+    
+    
+    
+    
+    list_files(start_dir, argc, argv);
+    
     if (argc > 1)
     {
         int filter_or_action = 0;
@@ -30,7 +46,7 @@ int main(int argc, char *argv[])
     {
         // find in aktuellen verzeichnis, ohne spezifische Filter und Aktionen
 
-        list_files(".");
+        // list_files(".");
     }
     return 0;
 }
