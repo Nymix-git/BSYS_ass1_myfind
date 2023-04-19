@@ -1,5 +1,5 @@
 #include "iterator.h"
-#include "myfind1.c"
+#include "validator.c"
 
 #define MAX_ARGS 255
 
