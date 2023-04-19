@@ -148,8 +148,7 @@ void list_files(const char *dirname, const int argc, const char *argv[])
                 {
                     printf("%s/%s\n", dirname, entry->d_name);
                 }
-                
-            }
+                        }
             else
             {
                 /* No tests or actions given, print the entry */
