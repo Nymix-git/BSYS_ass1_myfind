@@ -9,13 +9,20 @@
 #include <sys/types.h>
 #include <pwd.h>
 
-void list_files(const char *dirname, const int argc, const char *argv[])
+/**
+ * @brief This function implements the functionality of the "find" command line utility. Before calling this function the arguments must be validated and the starting directory must be evaluated. This function calls itself recursively for each directory found.
+ *
+ * @param dirname Path of the starting directory
+ * @param argc Argument counter, should be passed from main
+ * @param argv Argument array, should be passed from main. It is important to validate the arguments first since this function does assume that all arguments are valid
+ */
+void list_files(char *dirname, int argc, char **argv)
 {
     /* Open directory */
     DIR *dir = opendir(dirname);
     if (dir == NULL)
     {
-        printf("myfind: '%s': File or directory not found\n", dirname);
+        printf("Error: '%s': File or directory not found\n", dirname);
         exit(EXIT_FAILURE);
     }
 
@@ -38,10 +45,11 @@ void list_files(const char *dirname, const int argc, const char *argv[])
             }
             strcat(path, entry->d_name);
 
+            /* Get the stats of the current entry */
             struct stat *entry_stats = malloc(sizeof(struct stat));
             if (entry_stats == NULL)
             {
-                printf("Error: failed to allocate memory for entry_stats.\n");
+                printf("Error: Failed to allocate memory for entry_stats\n");
                 exit(EXIT_FAILURE);
             }
             lstat(path, entry_stats);
@@ -51,6 +59,7 @@ void list_files(const char *dirname, const int argc, const char *argv[])
             int i = 1;
             if (argc > 1)
             {
+                /* This variable is used to detect if the current entry does not meet the requirements of the tests */
                 int broken = 0;
                 /* At least one argument given */
                 /* Check if a starting path was given */
@@ -148,7 +157,7 @@ void list_files(const char *dirname, const int argc, const char *argv[])
                 {
                     printf("%s/%s\n", dirname, entry->d_name);
                 }
-                        }
+            }
             else
             {
                 /* No tests or actions given, print the entry */

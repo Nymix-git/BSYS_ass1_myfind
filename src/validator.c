@@ -117,28 +117,4 @@ void process_args(int argc, char **argv, char *start_dir)
             die("Invalid argument");
         }
     }
-
-    /* Print the parsed arguments */
-    // printf("Start directory: %s\n", start_dir);
-    // printf("Tests:\n");
-    // for (i = 0; i < test_count; i += 2)
-    // {
-    //     printf("%s\n", tests[i + 1]);
-    // }
-    // printf("Actions:\n");
-    // for (i = 0; i < action_count; i++)
-    // {
-    //     printf("  %s\n", actions[i]);
-    // }
 }
-
-/* Main function */
-// int main(int argc, char **argv)
-// {
-//     char start_dir[MAX_ARGS];
-
-//     /* Process arguments */
-//     process_args(argc, argv, start_dir);
-
-//     return 0;
-// }
