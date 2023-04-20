@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24.3)
+cmake_minimum_required(VERSION 3.18.4)
 
 project("myfind")
 

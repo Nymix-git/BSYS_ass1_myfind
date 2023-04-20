@@ -1,3 +1,3 @@
 #pragma once
 
-void list_files(const char *dirname);
+void list_files(char *dirname, int argc, char **argv);

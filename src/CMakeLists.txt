@@ -1,1 +1,2 @@
-add_library(util iterator.c)
+add_library(util    iterator.c
+                    validator.c)
