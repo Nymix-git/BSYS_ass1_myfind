@@ -8,6 +8,10 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <pwd.h>
+#include <time.h>
+#include <grp.h>
+#include <sys/stat.h>
+
 
 /**
  * @brief This function implements the functionality of the "find" command line utility. Before calling this function the arguments must be validated and the starting directory must be evaluated. This function calls itself recursively for each directory found.
@@ -47,6 +51,7 @@ void list_files(char *dirname, int argc, char **argv)
 
             /* Get the stats of the current entry */
             struct stat *entry_stats = malloc(sizeof(struct stat));
+
             if (entry_stats == NULL)
             {
                 printf("Error: Failed to allocate memory for entry_stats\n");
@@ -147,9 +152,89 @@ void list_files(char *dirname, int argc, char **argv)
                     else if (strcmp(argv[i], "-ls") == 0)
                     {
                         print_or_ls_in_arguments = 1;
-                        // TODO: Change this to -ls print
+                        
                         /* -ls print the current entry */
-                        printf("-ls:\t%s/%s\n", dirname, entry->d_name);
+                        struct passwd *user = getpwuid(entry_stats->st_uid);
+                        struct group *group = getgrgid(entry_stats->st_gid);
+                        struct passwd *pw = getpwuid(entry_stats->st_uid);
+
+                        char date_string[20];
+                        strftime(date_string, sizeof(date_string), "%b %d %H:%M", localtime(&entry_stats->st_mtime));
+
+                        printf("%9ld %6lu ", entry_stats->st_ino, entry_stats->st_nlink);
+
+                        // File type and permissions
+                        switch (entry_stats->st_mode & S_IFMT)
+                        {
+                        case S_IFBLK:
+                            printf("b");
+                            break;
+                        case S_IFCHR:
+                            printf("c");
+                            break;
+                        case S_IFDIR:
+                            printf("d");
+                            break;
+                        case S_IFIFO:
+                            printf("p");
+                            break;
+                        case S_IFLNK:
+                            printf("l");
+                            break;
+                        case S_IFREG:
+                            printf("-");
+                            break;
+                        case S_IFSOCK:
+                            printf("s");
+                            break;
+                        default:
+                            printf("?");
+                            break;
+                        }
+                        printf("%c%c%c%c%c%c%c%c%c  ",
+                               (entry_stats->st_mode & S_IRUSR) ? 'r' : '-',
+                               (entry_stats->st_mode & S_IWUSR) ? 'w' : '-',
+                               (entry_stats->st_mode & S_IXUSR) ? 'x' : '-',
+                               (entry_stats->st_mode & S_IRGRP) ? 'r' : '-',
+                               (entry_stats->st_mode & S_IWGRP) ? 'w' : '-',
+                               (entry_stats->st_mode & S_IXGRP) ? 'x' : '-',
+                               (entry_stats->st_mode & S_IROTH) ? 'r' : '-',
+                               (entry_stats->st_mode & S_IWOTH) ? 'w' : '-',
+                               (entry_stats->st_mode & S_IXOTH) ? 'x' : '-');
+
+                        //printf("%4lu ", entry_stats->st_uid);
+
+                        // Get the number of hard links to the file
+                        printf(" %lu ", (unsigned long)entry_stats -> st_nlink);
+
+                        // User name
+                        if (user == NULL)
+                        {
+                            printf("%4lu ", entry_stats->st_uid);
+                        }
+                        else
+                        {
+                            printf("%-8s ", user->pw_name);
+                        }
+
+                        // Group name
+                        if (group == NULL)
+                        {
+                            printf("%4lu ", entry_stats->st_gid);
+                        }
+                        else
+                        {
+                            printf("%-8s ", group->gr_name);
+                        }
+
+                        // File size
+                        printf("%8lld ", entry_stats->st_size);
+
+                        // Date and time
+                        printf("%s ", date_string);
+
+                        // File name
+                        printf("%s\n", path);
                     }
                     i++;
                 }
