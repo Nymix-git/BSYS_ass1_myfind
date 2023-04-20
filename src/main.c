@@ -1,5 +1,5 @@
 #include "iterator.h"
-#include "validator.c"
+#include "validator.h"
 
 #define MAX_ARGS 255
 
