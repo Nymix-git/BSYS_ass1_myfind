@@ -12,7 +12,6 @@
 #include <grp.h>
 #include <sys/stat.h>
 
-
 /**
  * @brief This function implements the functionality of the "find" command line utility. Before calling this function the arguments must be validated and the starting directory must be evaluated. This function calls itself recursively for each directory found.
  *
@@ -37,17 +36,20 @@ void list_files(char *dirname, int argc, char **argv)
     /* Check if entry != NULL and iterate over entries and recursively iterate through directories */
     while (entry != NULL)
     {
-        /* Skip over . and .. */
-        if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
+        /* Skip over .. */
+        if (strcmp(entry->d_name, "..") != 0)
         {
             /* Create the pathname of current entry */
             char path[512] = {0};
             strcat(path, dirname);
-            if (strcmp(dirname, "/") != 0)
+            if (strcmp(dirname, "/") != 0 && strcmp(entry->d_name, ".") != 0)
             {
                 strcat(path, "/");
             }
-            strcat(path, entry->d_name);
+            if (strcmp(entry->d_name, ".") != 0)
+            {
+                strcat(path, entry->d_name);
+            }
 
             /* Get the stats of the current entry */
             struct stat *entry_stats = malloc(sizeof(struct stat));
@@ -143,7 +145,7 @@ void list_files(char *dirname, int argc, char **argv)
                             break;
                         }
                     }
-                    else if (strcmp(argv[i], "-print") == 0)
+                    else if (strcmp(argv[i], "-print") == 0 && strcmp(entry->d_name, ".") != 0)
                     {
                         print_or_ls_in_arguments = 1;
                         /* -print the current entry */
@@ -152,7 +154,7 @@ void list_files(char *dirname, int argc, char **argv)
                     else if (strcmp(argv[i], "-ls") == 0)
                     {
                         print_or_ls_in_arguments = 1;
-                        
+
                         /* -ls print the current entry */
                         struct passwd *user = getpwuid(entry_stats->st_uid);
                         struct group *group = getgrgid(entry_stats->st_gid);
@@ -202,10 +204,10 @@ void list_files(char *dirname, int argc, char **argv)
                                (entry_stats->st_mode & S_IWOTH) ? 'w' : '-',
                                (entry_stats->st_mode & S_IXOTH) ? 'x' : '-');
 
-                        //printf("%4lu ", entry_stats->st_uid);
+                        // printf("%4lu ", entry_stats->st_uid);
 
                         // Get the number of hard links to the file
-                        printf(" %lu ", (unsigned long)entry_stats -> st_nlink);
+                        printf(" %lu ", (unsigned long)entry_stats->st_nlink);
 
                         // User name
                         if (user == NULL)
@@ -238,7 +240,7 @@ void list_files(char *dirname, int argc, char **argv)
                     }
                     i++;
                 }
-                if (print_or_ls_in_arguments == 0 && broken == 0)
+                if (print_or_ls_in_arguments == 0 && broken == 0 && strcmp(entry->d_name, ".") != 0)
                 {
                     printf("%s/%s\n", dirname, entry->d_name);
                 }
@@ -246,11 +248,14 @@ void list_files(char *dirname, int argc, char **argv)
             else
             {
                 /* No tests or actions given, print the entry */
-                printf("%s/%s\n", dirname, entry->d_name);
+                if (strcmp(entry->d_name, ".") != 0)
+                {
+                    printf("%s/%s\n", dirname, entry->d_name);
+                }
             }
 
             /* If entry is a directory recursive call to iterate over its content */
-            if (entry->d_type == DT_DIR)
+            if (entry->d_type == DT_DIR && strcmp(entry->d_name, ".") != 0)
             {
                 list_files(path, argc, argv);
             }
