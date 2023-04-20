@@ -169,6 +169,7 @@ void list_files(char *dirname, int argc, char **argv)
             {
                 list_files(path, argc, argv);
             }
+            free(entry_stats);
         }
         /* Next entry */
         entry = readdir(dir);
