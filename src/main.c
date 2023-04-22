@@ -1,5 +1,3 @@
-
-
 //Code geschrieben von Jakob Gridl und Samuel Bißmann
 //Teamarbeit über Github
 
