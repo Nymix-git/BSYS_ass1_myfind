@@ -1,3 +1,11 @@
+
+
+//Code geschrieben von Jakob Gridl und Samuel Bißmann
+//Teamarbeit über Github
+
+//Validator.c und -ls-Funktion von Samuel Bißmann
+//Iterator und Main.c von Jakob Gridl 
+
 #include "iterator.h"
 #include "validator.h"
 
